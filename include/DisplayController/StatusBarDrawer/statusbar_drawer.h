@@ -44,6 +44,12 @@ private:
         display.display();
     }
 
+    void clear_message_area()
+    {
+
+        display.clearDisplayArea(0, 0, 80, 15);
+    }
+
 public:
     StatusBarDrawer() {}
 
@@ -95,5 +101,27 @@ public:
         clear_bluetooth_icon_placeholder();
 
         return;
+    }
+
+    // Write 2 line message on top corner left.
+    void WriteTwoLevelMessage(String line1, String line2)
+    {
+        clear_message_area();
+        display.setTextSize(1);  // Normal 1:1 pixel scale
+        display.setTextColor(1); // Draw white text
+        display.setCursor(0, 0); // Start at top-left corner
+        display.println(line1);
+        display.println(line2);
+        display.display();
+    }
+
+    void WriteOneLevelMessage(String message)
+    {
+        clear_message_area();
+        display.setTextSize(2);  // Normal 1:1 pixel scale
+        display.setTextColor(1); // Draw white text
+        display.setCursor(0, 0); // Start at top-left corner
+        display.println(message);
+        display.display();
     }
 };
