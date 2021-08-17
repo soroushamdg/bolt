@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-#define PI 3.14159265
 #define hour_hand_pixels 9
 #define minute_hand_pixels 18
 
