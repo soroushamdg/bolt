@@ -20,11 +20,11 @@ public:
 
     void init()
     {
-        if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
+        while (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
         {
-            Serial.print(F("SSD1306 allocation failed"));
-            for (;;)
-                ; // Don't proceed, loop forever
+            Serial.print(F("SSD1306 allocation failed, Trying again..."));
+
+            delay(1000);
         }
     }
 

@@ -24,9 +24,6 @@ ClockfaceAnalogController cacontroller = ClockfaceAnalogController();
 #include <DisplayController/ClockInterfaceController/clock_face_digital.h>
 ClockfaceDigitalController cdcontroller = ClockfaceDigitalController();
 
-#include <TimeController/time_controller.h>
-TimeController timecontroller = TimeController();
-
 void setup()
 {
   Serial.begin(9600);
@@ -53,6 +50,8 @@ void setup()
   cdcontroller.drawDigitalFace(2, 2, 3, 1);
 
   cmstatus.drawMiniStatus(2, 3, "22 Aug, 2021");
+
+  stbardrawer.WriteTwoLevelMessage("< to Scroll", "> for Action");
 }
 
 void loop()

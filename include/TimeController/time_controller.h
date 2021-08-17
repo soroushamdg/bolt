@@ -21,11 +21,11 @@ private:
 public:
     TimeController()
     {
-        if (!rtc.begin())
+        while (!rtc.begin())
         {
-            Serial.println("Couldn't find RTC");
-            while (1)
-                ;
+            Serial.println(F("Couldn't find RTC"));
+            Serial.println(F("Trying again..."));
+            delay(1000);
         }
 
         if (!rtc.isrunning())
