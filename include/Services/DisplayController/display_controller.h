@@ -48,9 +48,9 @@ public:
         display.fillRect(0, 0, 128, 15, 1);
     }
 
-    void printInCenter(String text, int color, int background)
+    void printInCenter(String text, int color, int background, int top_margin)
     {
-        display.setCursor(64 - (text.length() * 6 / 2), 36);
+        display.setCursor(64 - (text.length() * 6 / 2), 36 + top_margin);
         display.setTextColor(color, background);
         display.println(text);
     }
