@@ -38,6 +38,23 @@ public:
         display.clearDisplayArea(0, 0, 128, 15);
     }
 
+    void fillBlueArea()
+    {
+        display.fillRect(0, 16, 128, 48, 1);
+    }
+
+    void fillYelloweArea()
+    {
+        display.fillRect(0, 0, 128, 15, 1);
+    }
+
+    void printInCenter(String text, int color, int background)
+    {
+        display.setCursor(64 - (text.length() * 6 / 2), 36);
+        display.setTextColor(color, background);
+        display.println(text);
+    }
+
     void writehello()
     {
         display.clearDisplayArea(0, 16, 128, 48);
