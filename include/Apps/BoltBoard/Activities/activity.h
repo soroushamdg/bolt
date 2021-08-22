@@ -13,9 +13,11 @@ class Activity
 {
 private:
     ActivityStatus current_status;
+    bool _specialActivity = false;
 
 public:
     String id;
+    int queueIndex;
     void changeStatusTo(ActivityStatus status)
     {
         current_status = status;
@@ -41,6 +43,10 @@ public:
         default:
             break;
         }
+    }
+    bool isSpecialActivity()
+    {
+        return _specialActivity;
     }
 
     Activity()
