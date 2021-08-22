@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include "clock_face_analog.h"
-#include "clock_face_digital.h"
+#include <Apps/BoltWatch/watchfaces/clock_face_analog.h>
+#include <Apps/BoltWatch/watchfaces/clock_face_digital.h>
 
 enum ClockfaceMode
 {
