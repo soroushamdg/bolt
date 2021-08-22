@@ -22,7 +22,7 @@ public:
     void init()
     {
         Serial.println("Bluetooth Starting...");
-        BTSerial.begin("Bolt 🦷");
+        BTSerial.begin("⚡Bolt");
         active = true;
         Serial.println("Bluetooth Started -> Ready to pair...");
     }
