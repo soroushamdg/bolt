@@ -19,7 +19,7 @@ private:
     }
 
     // Clear a square at x:91 to x:105 and Y:0 to y:15
-    void clear_focus_icon_placeholder()
+    void clear_wireless_icon_placeholder()
     {
         for (int x = 96; x < 106; x++)
         {
@@ -70,18 +70,18 @@ public:
     }
 
     // Draw a icon at x:91 to x:105 and Y:0 to y:15
-    void DrawFocusIcon()
+    void DrawWirelessIcon()
     {
-        clear_focus_icon_placeholder();
-        display.drawBitmap(96, 0, status_icon_focus, 15, 15, 1);
+        clear_wireless_icon_placeholder();
+        display.drawBitmap(96, 0, status_icon_wifi, 15, 15, 1);
         display.display();
         return;
     }
 
     // Remove a icon at x:91 to x:105 and Y:0 to y:15
-    void RemoveFocusIcon()
+    void RemoveWirelessIcon()
     {
-        clear_focus_icon_placeholder();
+        clear_wireless_icon_placeholder();
 
         return;
     }
