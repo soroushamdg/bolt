@@ -28,6 +28,16 @@ public:
         }
     }
 
+    void clearBlueArea()
+    {
+        display.clearDisplayArea(0, 16, 128, 48);
+    }
+
+    void clearYellowArea()
+    {
+        display.clearDisplayArea(0, 0, 128, 15);
+    }
+
     void writehello()
     {
         display.clearDisplayArea(0, 16, 128, 48);
