@@ -10,10 +10,7 @@ private:
     uint8_t activityAppearanceTimeCounter; //?
 
 public:
-    ActivityManager()
-    {
-    }
-
+    ActivityManager() {}
     int insertActivity(Activity activity) {}
 
     String nextActivityID(void) {}

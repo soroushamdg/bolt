@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 enum ActivityStatus
 {
     create,
@@ -6,8 +8,7 @@ enum ActivityStatus
     pause,
     resume,
     destroy,
-
-}
+};
 
 class Activity
 {
@@ -51,11 +52,11 @@ public:
 
     Activity()
     {
-        changeStatusTo(ActivityStatus.create);
+        changeStatusTo(create);
     }
     ~Activity()
     {
-        changeStatusTo(ActivityStatus.destroy);
+        changeStatusTo(destroy);
     }
 
     // Activity cycle functions
@@ -84,4 +85,7 @@ public:
     void onSinglePushFB(void) {}
     void onHoldPushFB(void) {}
     void onDoublePushFB(void) {}
+
+    // This function will run if app needs to continue it's process.
+    void backgroundRun(void) {}
 };
