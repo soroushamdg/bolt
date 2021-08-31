@@ -8,6 +8,7 @@
 #define OLED_RESET -1       // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
+#include <Services/DisplayController/Fonts/montserrat.h>
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 class DisplayController
@@ -26,6 +27,7 @@ public:
 
             delay(1000);
         }
+        display.setFont(&montserrat_05pt7b);
     }
 
     void clearBlueArea()
@@ -50,9 +52,14 @@ public:
 
     void printInCenter(String text, int font_scale, int color, int background, int top_margin)
     {
-        display.setCursor(64 - (text.length() * (font_scale * 6) / 2), 36 + top_margin);
         display.setTextColor(color, background);
         display.setTextSize(font_scale);
+        String t = text;
+        int16_t x1, y1;
+        uint16_t w, h;
+        display.getTextBounds(text, 0, 0, &x1, &y1, &w, &h);
+        display.setCursor(64 - (w / 2), 40 - (h / 2) + top_margin);
+
         display.println(text);
     }
 
