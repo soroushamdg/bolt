@@ -1,15 +1,5 @@
 #include <Arduino.h>
 
-enum ActivityStatus
-{
-    create,
-    appear,
-    running,
-    pause,
-    resume,
-    destroy,
-};
-
 class Activity
 {
 private:
@@ -24,27 +14,33 @@ public:
         current_status = status;
         switch (status)
         {
-        case create:
+        case ActivityStatus::created:
             onCreate();
             break;
-        case appear:
+        case ActivityStatus::appear:
             onAppear();
             break;
-        case running:
+        case ActivityStatus::running:
             break;
-        case pause:
+        case ActivityStatus::pause:
             onPause();
             break;
-        case resume:
+        case ActivityStatus::resume:
             onResume();
             break;
-        case destroy:
+        case ActivityStatus::destroy:
             onDestroy();
             break;
         default:
             break;
         }
     }
+
+    void setSpecialActivity()
+    {
+        _specialActivity = true;
+    }
+
     bool isSpecialActivity()
     {
         return _specialActivity;
@@ -52,40 +48,39 @@ public:
 
     Activity()
     {
-        changeStatusTo(create);
+        
     }
     ~Activity()
     {
-        changeStatusTo(destroy);
     }
 
     // Activity cycle functions
     /*
      Set defaults or load data from memory.
     */
-    void onCreate() {}
-    /*
+    virtual void onCreate() {}
+    /* 
      Set and make ready to display the activity.
     */
-    void onAppear() {}
+    virtual void onAppear() {}
     /*
      Save latest status of activity and make ready to leave the screen.
     */
-    void onPause() {}
+    virtual void onPause() {}
     /*
      Reappear activity with latest status from memory.
     */
-    void onResume() {}
+    virtual void onResume() {}
     /*
      Save status to flash if needed and make ready to destroy from memory.
     */
-    void onDestroy() {}
+    virtual void onDestroy() {}
 
     // Function Button functions
-    void onSinglePushFB(void) {}
-    void onHoldPushFB(void) {}
-    void onDoublePushFB(void) {}
+    virtual void onSinglePushFB(void) {}
+    virtual void onHoldPushFB(void) {}
+    virtual void onDoublePushFB(void) {}
 
     // This function will run if app needs to continue it's process.
-    void backgroundRun(void) {}
+    virtual void backgroundRun(void) {}
 };
