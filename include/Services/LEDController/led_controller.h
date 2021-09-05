@@ -1,33 +1,32 @@
 #include <Arduino.h>
+#include <analogWrite.h>
 
 class LEDController
 {
 private:
     uint8_t pin;
     uint8_t defaultvalue;
-    bool analog;
 
 public:
-    LEDController(uint8_t pin_number, uint8_t default_val, bool analog)
+    LEDController(uint8_t pin_number, uint8_t default_val)
     {
         pin = pin_number;
         pinMode(pin_number, OUTPUT);
         defaultvalue = default_val;
         digitalWrite(pin_number, default_val);
-        analog = analog;
     }
 
-    void pinhigh()
+    void high()
     {
         digitalWrite(pin, 1);
     }
 
-    void pinlow()
+    void low()
     {
         digitalWrite(pin, 0);
     }
 
-    void pinanalog(uint8_t value)
+    void analog(uint8_t value)
     {
         if (value >= 0 && value <= 255)
         {
