@@ -11,8 +11,8 @@ private:
         count++;
     }
 
-    uint8_t focusTimeSec = 45 * 60;
-    uint8_t breakTimeSec = 15 * 60;
+    uint16_t focusTimeSec = 45 * 60;
+    uint16_t breakTimeSec = 15 * 60;
 
 public:
     FocusAssistController() {}
