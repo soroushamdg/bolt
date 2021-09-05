@@ -106,6 +106,7 @@ public:
     // Write 2 line message on top corner left.
     void WriteTwoLevelMessage(String line1, String line2)
     {
+        display.setFont();
         clear_message_area();
         display.setTextSize(1);  // Normal 1:1 pixel scale
         display.setTextColor(1); // Draw white text
@@ -113,6 +114,7 @@ public:
         display.println(line1);
         display.println(line2);
         display.display();
+        display.setFont(&montserrat_05pt7b);
     }
 
     void WriteOneLevelMessage(String message)

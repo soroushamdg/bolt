@@ -30,6 +30,16 @@ public:
         display.setFont(&montserrat_05pt7b);
     }
 
+    void setMontserratFont()
+    {
+        display.setFont(&montserrat_05pt7b);
+    }
+
+    void setDefaultFont()
+    {
+        display.setFont();
+    }
+
     void clearBlueArea()
     {
         display.clearDisplayArea(0, 16, 128, 48);

@@ -39,9 +39,11 @@ public:
 
     void drawMiniStatus(int hour, int minute, String date)
     {
+        display.setFont();
         clear_statusbar_clock_area();
         draw_time_digits(hour, minute);
         draw_date(date);
         display.display();
+        display.setFont(&montserrat_05pt7b);
     }
 };
