@@ -1,38 +1,55 @@
 #include <Arduino.h>
 
+enum class FocusAssistMode
+{
+    fa_focus,
+    fa_break,
+    fa_idle
+};
+
 class FocusAssistController
 {
 private:
-    static uint8_t count;
+    static uint16_t count;
     hw_timer_t *timer = NULL;
+
+public:
+    FocusAssistMode assistMode;
+
+    uint8_t handler_interval_time = 900;
+
+    uint16_t focusTimeSec = 45 * 60;
+    uint16_t breakTimeSec = 15 * 60;
+
+    TaskHandle_t _backgroundHandle = NULL;
+
+    FocusAssistController(void (*_handler)(void) = NULL)
+    {
+        assistMode = FocusAssistMode::fa_idle;
+        handler = _handler;
+    }
 
     static void onTimerInterupt()
     {
         count++;
     }
 
-    uint16_t focusTimeSec = 45 * 60;
-    uint16_t breakTimeSec = 15 * 60;
-
-public:
-    FocusAssistController() {}
-
-    void setFocusTimeSecs(uint8_t focus_time)
+    void setFocusTimeSecs(uint16_t focus_time)
     {
         focusTimeSec = focus_time;
     }
 
-    uint8_t getFocusTime()
+    uint16_t getFocusTime()
     {
         return focusTimeSec;
     }
 
-    void setBreakTimeSecs(uint8_t break_time)
+    void setBreakTimeSecs(uint16_t break_time)
     {
         breakTimeSec = break_time;
     }
 
-    uint8_t getBreakTime()
+    uint16_t getBreakTime()
     {
         return breakTimeSec;
     }
@@ -40,15 +57,16 @@ public:
     //Used to check if it's ready to work.
     bool hasFocusBreakTimes()
     {
-        return (breakTimeSec != 0) && (focusTimeSec != 0);
+        return (breakTimeSec != 0) && (focusTimeSec != 0) && (handler_interval_time != 0);
     }
 
     void startTimer()
     {
         timer = timerBegin(0, 80, true);
-
+        count = 0;
         // Attach interupt function to timer.
         timerAttachInterrupt(timer, &onTimerInterupt, true);
+        enableHandlerTask();
     }
 
     void pauseTimer()
@@ -56,10 +74,19 @@ public:
         timerStop(timer);
     }
 
+    void resumeTimer()
+    {
+        timer = timerBegin(0, 80, true);
+        // Attach interupt function to timer.
+        timerAttachInterrupt(timer, &onTimerInterupt, true);
+        enableHandlerTask();
+    }
+
     void stopTimer()
     {
         timerStop(timer);
         count = 0;
+        disableHandlerTask();
     }
 
     void resetTimer()
@@ -67,9 +94,48 @@ public:
         count = 0;
     }
 
-    uint8_t getTimerCount()
+    uint16_t getTimerCount()
     {
         return count;
+    }
+
+    void (*handler)();
+
+    void refreshMode()
+    {
+    }
+    /*
+        Runs in background when timer is running and will run a function on specific interval(for example every 60 seconds.)
+    */
+    void _background()
+    {
+        for (;;)
+        {
+            refreshMode();
+            handler();
+        }
+        vTaskDelay(handler_interval_time / portTICK_PERIOD_MS);
+    }
+
+    static void FocusAssistController::static_Background(void *pvParameter)
+    {
+        FocusAssistController *fac = static_cast<FocusAssistController *>(pvParameter); //obtain the instance pointer
+        fac->_background();                                                             //dispatch to the member function, now that we have an instance pointer
+    }
+
+    void enableHandlerTask()
+    {
+        xTaskCreate(static_Background,
+                    "Focus Assist Background Task",
+                    1000,
+                    this,
+                    3,
+                    &_backgroundHandle);
+    }
+
+    void disableHandlerTask()
+    {
+        vTaskSuspend(_backgroundHandle);
     }
 };
 
