@@ -14,24 +14,39 @@ private:
     hw_timer_t *timer = NULL;
 
 public:
-    FocusAssistMode assistMode;
+    static FocusAssistMode assistMode;
 
-    uint8_t handler_interval_time = 900;
+    uint8_t handler_interval_time = 500;
 
-    uint16_t focusTimeSec = 45 * 60;
-    uint16_t breakTimeSec = 15 * 60;
+    static uint16_t focusTimeSec;
+    static uint16_t breakTimeSec;
 
     TaskHandle_t _backgroundHandle = NULL;
 
-    FocusAssistController(void (*_handler)(void) = NULL)
+    void *handler_parameters;
+    FocusAssistController(void (*_handler)(void *parameters), void *parameter)
     {
         assistMode = FocusAssistMode::fa_idle;
+        handler_parameters = parameter;
         handler = _handler;
     }
-
-    static void onTimerInterupt()
+    static void onTimerInterrupt()
     {
         count++;
+        if (count == focusTimeSec && assistMode == FocusAssistMode::fa_focus)
+        {
+            count = 0;
+            assistMode = FocusAssistMode::fa_break;
+        }
+        else if (count == breakTimeSec && assistMode == FocusAssistMode::fa_break)
+        {
+            count = 0;
+            assistMode = FocusAssistMode::fa_focus;
+        }
+        else
+        {
+            return;
+        }
     }
 
     void setFocusTimeSecs(uint16_t focus_time)
@@ -64,8 +79,9 @@ public:
     {
         timer = timerBegin(0, 80, true);
         count = 0;
+        assistMode = FocusAssistMode::fa_focus;
         // Attach interupt function to timer.
-        timerAttachInterrupt(timer, &onTimerInterupt, true);
+        timerAttachInterrupt(timer, &onTimerInterrupt, true);
         enableHandlerTask();
     }
 
@@ -78,7 +94,7 @@ public:
     {
         timer = timerBegin(0, 80, true);
         // Attach interupt function to timer.
-        timerAttachInterrupt(timer, &onTimerInterupt, true);
+        timerAttachInterrupt(timer, &onTimerInterrupt, true);
         enableHandlerTask();
     }
 
@@ -86,6 +102,7 @@ public:
     {
         timerStop(timer);
         count = 0;
+        assistMode = FocusAssistMode::fa_idle;
         disableHandlerTask();
     }
 
@@ -99,11 +116,8 @@ public:
         return count;
     }
 
-    void (*handler)();
+    void (*handler)(void *parameters);
 
-    void refreshMode()
-    {
-    }
     /*
         Runs in background when timer is running and will run a function on specific interval(for example every 60 seconds.)
     */
@@ -111,8 +125,7 @@ public:
     {
         for (;;)
         {
-            refreshMode();
-            handler();
+            handler(handler_parameters);
         }
         vTaskDelay(handler_interval_time / portTICK_PERIOD_MS);
     }
@@ -127,7 +140,7 @@ public:
     {
         xTaskCreate(static_Background,
                     "Focus Assist Background Task",
-                    1000,
+                    configMINIMAL_STACK_SIZE,
                     this,
                     3,
                     &_backgroundHandle);
