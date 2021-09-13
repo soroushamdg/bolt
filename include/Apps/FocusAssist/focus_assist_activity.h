@@ -26,11 +26,76 @@ public:
         updateSettings();
         facontroller.setFocusTimeSecs(1 * 60); // 1 minute
         facontroller.setFocusTimeSecs(1 * 60);
+        if (facontroller.hasFocusBreakTimes())
+        {
+            return;
+        }
     }
 
-    void startFocusAssist() {}
-    void pauseFocusAssist() {}
-    void stopFocusAssist() {}
+    void startFocusAssist()
+    {
+        facontroller.startTimer();
+        active = true;
+    }
+    void pauseFocusAssist()
+    {
+        facontroller.pauseTimer();
+        active = true;
+    }
+    void resumeFocusAssist()
+    {
+        facontroller.startTimer();
+        active = true;
+    }
+    void stopFocusAssist()
+    {
+        facontroller.stopTimer();
+        active = false;
+    }
+
+    int currentStatus()
+    {
+        /*
+            focus + active : 0
+            focus + inactive : 1
+            break + active : 2
+            break + inactive : 3
+            idle + active : 4
+            idle + inactive : 5
+        */
+        int fac_status, faa_status;
+        switch (facontroller.assistMode)
+        {
+        case FocusAssistMode::fa_focus:
+            fac_status = 0;
+            break;
+        case FocusAssistMode::fa_break:
+            fac_status = 1;
+            break;
+        case FocusAssistMode::fa_idle:
+            fac_status = 2;
+            break;
+        default:
+            break;
+        }
+        switch (active)
+        {
+        case true:
+            active = 0;
+            break;
+        case false:
+            active = 1;
+            break;
+        default:
+            break;
+        }
+        return fac_status + faa_status;
+    }
+
+    // Function Button functions
+    void onSinglePushFB(void) override {}
+    void onHoldPushFB(void) override {}
+    void onDoublePushFB(void) override {}
 
     uint16_t focusRemainTime() { facontroller.focusTimeSec - facontroller.getTimerCount(); }
     uint16_t breakRemainTime() { facontroller.breakTimeSec - facontroller.getTimerCount(); }

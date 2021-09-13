@@ -4,7 +4,7 @@ enum class FocusAssistMode
 {
     fa_focus,
     fa_break,
-    fa_idle
+    fa_idle,
 };
 
 class FocusAssistController
